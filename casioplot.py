@@ -14,6 +14,7 @@ TYPE_SIZE = typing.Literal['small', 'medium', 'large']
 
 class CasioPlot:
     buffer: list[list[TYPE_COLOR_RETURN]]
+    FONT_MEDIUM: dict[str, list[list[int]]]
     HEIGHT: int
     WIDTH: int
 
@@ -46,6 +47,28 @@ class CasioPlotMonochrome(CasioPlot):
         self.frame_top = '╭' + '─' * self.WIDTH * 2 + '╮\r\n'
         self.frame_side = '│'
         self.frame_bottom = '╰' + '─' * self.WIDTH * 2 + '╯\r\n'
+        self.FONT_MEDIUM = {
+            'A': [
+                [0, 0, 1, 1, 1, 0],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 1, 1, 1, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0, 0]
+            ],
+            'B': [
+                [0, 1, 1, 1, 1, 0],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 1, 1, 1, 0],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 0, 0, 0, 1],
+                [0, 1, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0]
+            ],
+        }
 
     def show_screen(self) -> None:
         """
@@ -81,6 +104,8 @@ class CasioPlotMonochrome(CasioPlot):
         :param color:
         :return:
         """
+        if x < 0 or x > 127 or y < 0 or y > 63:
+            return
         r, g, b = color
         if r < 0 or r > 255 or g < 0 or g > 255 or b < 0 or b > 255:
             return
@@ -107,7 +132,18 @@ class CasioPlotMonochrome(CasioPlot):
         :param color:
         :param size:
         """
-        pass
+        match size:
+            case 'small':
+                chosen_font = self.FONT_MEDIUM
+            case 'medium':
+                chosen_font = self.FONT_MEDIUM
+
+        for char_i, char in enumerate(content):
+            bitmap = chosen_font[char]
+            for char_y in range(8):
+                for char_x in range(6):
+                    if bitmap[char_y][char_x]:
+                        set_pixel(x+char_x + 6 * char_i, y+char_y, color)
 
 
 # Emulated functions
