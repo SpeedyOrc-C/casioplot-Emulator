@@ -94,7 +94,6 @@ class CasioPlotMonochrome(CasioPlot):
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
                 self.buffer[y][x] = COLOR_WHITE
-        show_screen()
 
     def set_pixel(self, x: int, y: int, color: TYPE_COLOR = COLOR_BLACK) -> None:
         """
